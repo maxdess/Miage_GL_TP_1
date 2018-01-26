@@ -37,8 +37,8 @@ public class MachineCafe {
 		Ingredient sucre = new Sucre(quantiteInitiale);
 		
 		// Ajout des ingrédients à la machine
-		this.listeIngredients.add(lait);
 		this.listeIngredients.add(cafe);
+		this.listeIngredients.add(lait);
 		this.listeIngredients.add(chocolat);
 		this.listeIngredients.add(sucre);
 	}
@@ -114,27 +114,27 @@ public class MachineCafe {
 			choix = Integer.parseInt(reponse);
 			
 			switch(choix) {
-			case 1: // acheter boisson
+			case 1: 
+				this.listeIngredients.get(0).remplir();
 				break;
-			case 2: // ajouter boisson
+			case 2: 
+				this.listeIngredients.get(1).remplir();
 				break;
-			case 3: // modifier boisson
+			case 3: 
+				this.listeIngredients.get(2).remplir();
 				break;
-			case 4: // supprimer boisson
+			case 4: 
+				this.listeIngredients.get(3).remplir();
 				break;
-			case 5: // ajouter ingredient
-				break;
-			case 6: // verifier stock
-				machine.verifierStock();
-				break;
-			case 7: // quitter
-				end = true;
+			case 5: 
 				break;
 			default : // choix incorrect
-				System.err.println("Je n'ai pas compris votre choix, veuillez réessayer.");
-				System.out.println();
+				System.err.println("Cet ingredient n'existe pas.\n");
 				break;
 			}
+		}catch(Exception e) {
+			System.err.println("Veuillez entrer un nombre valide, de type 1, 2, ..., 5.");
+			System.out.println();
 		}
 		
 		

@@ -38,6 +38,7 @@ public class Main {
 				case 4: // supprimer boisson
 					break;
 				case 5: // ajouter ingredient
+					machine.ajouterIngredient();
 					break;
 				case 6: // verifier stock
 					machine.verifierStock();
