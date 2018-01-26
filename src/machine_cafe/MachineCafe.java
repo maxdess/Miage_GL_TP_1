@@ -1,6 +1,7 @@
 package machine_cafe;
 
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class MachineCafe {
 
@@ -12,7 +13,12 @@ public class MachineCafe {
 	/**
 	 * Liste des boissons de la machine
 	 */
-	public ArrayList<Boisson> listeBoissons;
+	private ArrayList<Boisson> listeBoissons;
+	
+	/**
+	 * Scanner pour lire les commandes au clavier
+	 */
+	private Scanner sc;
 	
 	/**
 	 * Constructeur de la classe machine à café
@@ -20,6 +26,7 @@ public class MachineCafe {
 	public MachineCafe() {
 		this.listeIngredients = new ArrayList<Ingredient>();
 		this.listeBoissons = new ArrayList<Boisson>();
+		this.sc = new Scanner(System.in);
 		
 		int quantiteInitiale = 100; // Quantité initiale de chaque ingrédient
 		
@@ -73,7 +80,7 @@ public class MachineCafe {
 
 
 	public void acheterBoisson() {
-		
+		this.sc.nextLine();
 	}
 	
 	public void ajouterBoisson() {
@@ -134,7 +141,7 @@ public class MachineCafe {
 	}
 	
 	public void verifierStock() {
-		String message="Voici la quantit� restante de chaques ingr�dient : \n";
+		String message="Voici la quantit� restante de chaques ingr�dient : \n";
 		for (Ingredient ingredient : this.listeIngredients ) {
 			message+=ingredient.toString()+"\n";
 			
