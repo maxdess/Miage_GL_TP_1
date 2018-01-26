@@ -1,6 +1,8 @@
 package machine_cafe;
 
 public abstract class Ingredient {
+	
+	String nom;
 
 	int qte;
 	
@@ -14,5 +16,12 @@ public abstract class Ingredient {
 		if (this.qte<0) this.qte = 0;
 		
 	}
+
+	@Override
+	public String toString() {
+		return "[" + nom + "] : [" + qte + "]";
+	}
+	
+	
 	
 }
