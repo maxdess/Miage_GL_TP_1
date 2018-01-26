@@ -17,6 +17,14 @@ public abstract class Ingredient {
 		
 	}
 
+	public int getQte() {
+		return qte;
+	}
+
+	public void setQte(int qte) {
+		this.qte = qte;
+	}
+
 	@Override
 	public String toString() {
 		return "[" + nom + "] : [" + qte + "]";
