@@ -20,6 +20,20 @@ public class MachineCafe {
 	public MachineCafe() {
 		this.listeIngredients = new ArrayList<Ingredient>();
 		this.listeBoissons = new ArrayList<Boisson>();
+		
+		int quantiteInitiale = 100; // Quantité initiale de chaque ingrédient
+		
+		// Création des ingrédients
+		Ingredient lait = new Lait(quantiteInitiale);
+		Ingredient cafe = new Cafe(quantiteInitiale);
+		Ingredient chocolat = new Chocolat(quantiteInitiale);
+		Ingredient sucre = new Sucre(quantiteInitiale);
+		
+		// Ajout des ingrédients à la machine
+		this.listeIngredients.add(lait);
+		this.listeIngredients.add(cafe);
+		this.listeIngredients.add(chocolat);
+		this.listeIngredients.add(sucre);
 	}
 	
 	/**
