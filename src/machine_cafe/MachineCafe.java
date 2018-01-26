@@ -93,6 +93,12 @@ public class MachineCafe {
 	}
 	
 	public void verifierStock() {
+		String message="Voici la quantité restante de chaques ingrédient : \n";
+		for (Ingredient ingredient : this.listeIngredients ) {
+			message+=ingredient.toString()+"\n";
+			
+		}
+		System.out.println(message);
 		
 	}
 }
