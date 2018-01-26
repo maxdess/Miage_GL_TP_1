@@ -1,31 +1,31 @@
 package machine_cafe;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public class MachineCafe {
 
 	/**
 	 * Stock de chaque ingrédient dans la machine
 	 */
-	private List<Ingredient> listeIngredients;
+	private ArrayList<Ingredient> listeIngredients;
 	
 	/**
 	 * Liste des boissons de la machine
 	 */
-	public List<Boisson> listeBoissons;
+	public ArrayList<Boisson> listeBoissons;
 	
 	/**
 	 * Constructeur de la classe machine à café
 	 */
 	public MachineCafe() {
-		this.listeIngredients = new List<Ingredient>();
-		this.listeBoissons = new List<Boisson>();
+		this.listeIngredients = new ArrayList<Ingredient>();
+		this.listeBoissons = new ArrayList<Boisson>();
 	}
 	
 	/**
 	 * @return the listeIngredients
 	 */
-	public List<Ingredient> getListeIngredients() {
+	public ArrayList<Ingredient> getListeIngredients() {
 		return listeIngredients;
 	}
 
@@ -34,7 +34,7 @@ public class MachineCafe {
 	/**
 	 * @param listeIngredients the listeIngredients to set
 	 */
-	public void setListeIngredients(List<Ingredient> listeIngredients) {
+	public void setListeIngredients(ArrayList<Ingredient> listeIngredients) {
 		this.listeIngredients = listeIngredients;
 	}
 
@@ -43,7 +43,7 @@ public class MachineCafe {
 	/**
 	 * @return the listeBoissons
 	 */
-	public List<Boisson> getListeBoissons() {
+	public ArrayList<Boisson> getListeBoissons() {
 		return listeBoissons;
 	}
 
@@ -52,7 +52,7 @@ public class MachineCafe {
 	/**
 	 * @param listeBoissons the listeBoissons to set
 	 */
-	public void setListeBoissons(List<Boisson> listeBoissons) {
+	public void setListeBoissons(ArrayList<Boisson> listeBoissons) {
 		this.listeBoissons = listeBoissons;
 	}
 
