@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -46,8 +47,9 @@ public class MachineCafe {
 		this.listeIngredients.put(chocolat, quantiteInitiale);
 		this.listeIngredients.put(sucre, quantiteInitiale);
 
-		// CrÃ©ation des boissons
-		HashMap recette = new HashMap<Ingredient, Integer>();
+		// Création des boissons
+		HashMap<Ingredient, Integer> recette = new HashMap<Ingredient, Integer>();
+
 		recette.put(cafe, 3);
 		recette.put(sucre, 2);
 		Boisson boisson1 = new Boisson("CafÃ©", 1, recette);
@@ -111,8 +113,8 @@ public class MachineCafe {
 		System.out.println();
 		for (Boisson b : this.listeBoissons) {
 			System.out.println((this.listeBoissons.indexOf(b) + 1) + " - " + b.getNom());
-		}
-		System.out.println(this.listeBoissons.size() + " - Annuler");
+		} 
+		System.out.println(this.listeBoissons.size() + 1 + " - Annuler");
 		System.out.println();
 		System.out.print("Votre choix : ");
 		String reponse = sc.nextLine();
@@ -141,7 +143,30 @@ public class MachineCafe {
 	}
 
 	public void supprimerBoisson() {
-
+		System.out.println("Quelle boisson souhaitez-vous supprimer ? Tapez le numéro de l'action que vous voulez acheter.");
+		System.out.println();
+		for (Boisson b : this.listeBoissons) {
+			System.out.println((this.listeBoissons.indexOf(b) + 1) + " - " + b.getNom());
+		}
+		System.out.println(this.listeBoissons.size() + 1 + " - Annuler");
+		System.out.println();
+		System.out.print("Votre choix : ");
+		String reponse = sc.nextLine();
+		System.out.println();
+		
+		int choix = -1;
+		try {
+			choix = Integer.parseInt(reponse) - 1;
+			if (choix >= 0 && choix < this.listeBoissons.size()) {
+				this.listeBoissons.remove(choix);
+				System.out.println("Votre boisson a bien été supprimée.");
+			} else {
+				System.err.println("Votre choix est incorrect.");
+			}
+		}
+		catch(Exception e) {
+			System.err.println("Veuillez entrer un nombre correct.");
+		}
 	}
 
 	public void ajouterIngredient() {
@@ -224,12 +249,29 @@ public class MachineCafe {
 
 	}
 
+	
+	public void diminuerStock(Ingredient i, int quantite) {
+		// On récupère la quantité dans la machine
+		int quantiteInitiale = this.listeIngredients.get(i);
+		// On diminue le stock dans la machine
+		int nouvelleQuantite = quantiteInitiale - quantite;
+		if (nouvelleQuantite < 0) {
+			nouvelleQuantite = 0;
+		}
+		// On met à jour à jour la valeur
+		this.listeIngredients.put(i, nouvelleQuantite);
+	}
+	
 
 	public void verifierStock() {
-		String message="Voici la quantitÃ© restante de chaques ingrÃ©dient : \n";
-		for (Ingredient ingredient : this.listeIngredients ) {
-			message+=ingredient.toString()+"\n";
 
+		String message="Voici la quantité restante de chaques ingrédient : \n";
+
+		for(Entry<Ingredient, Integer> entry : this.listeIngredients.entrySet()) {
+		    Ingredient ingredient = entry.getKey();
+		    Integer quantite = entry.getValue();
+		    message += ingredient.getNom() + " : " + quantite + " unité(s) restante(s)\n";
+		    this.diminuerStock(ingredient, quantite);
 		}
 		System.out.println(message);
 	}
@@ -238,10 +280,37 @@ public class MachineCafe {
 		System.out.println("Votre boisson " + b.getNom() + " coÃ»te " + b.getPrix() + "â‚¬.");
 		System.out.println("Veuillez entrer votre monnaie.");
 
-		String monnaie = this.sc.nextLine();
+		
+		System.out.println();
+		System.out.print("Votre choix : ");
 
-		System.out.println("Voici votre boisson !");
+		String monnaie = this.sc.nextLine();		
+		int montant = -1;
+		try {
+			montant = Integer.parseInt(monnaie);
+			if (montant >= b.getPrix()) {
+				System.out.println("Voici votre boisson !");
+				this.consommerBoisson(b);
+			} else {
+				System.err.println("Vous n'avez pas entré assez d'argent.");
+			}
+		}
+		catch(Exception e) {
+			System.err.println("Veuillez entrer un nombre correct.");
+		}
+
 	}
+	
+	public void consommerBoisson(Boisson b) {
+		int index = this.listeBoissons.indexOf(b);
 
+		for(Entry<Ingredient, Integer> entry : this.listeBoissons.get(index).getNbUnitesIngredient().entrySet()) {
+		    Ingredient ingredient = entry.getKey();
+		    Integer quantite = entry.getValue();
+		    System.err.println(ingredient.getNom() + " consomme " + quantite);
+		    this.diminuerStock(ingredient, quantite);
+		}
+		
+	}
 
 }
