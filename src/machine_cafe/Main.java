@@ -37,6 +37,7 @@ public class Main {
 				case 3: // modifier boisson
 					break;
 				case 4: // supprimer boisson
+					machine.supprimerBoisson();
 					break;
 				case 5: // ajouter ingredient
 					machine.ajouterIngredient();
