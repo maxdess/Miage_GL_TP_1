@@ -17,7 +17,7 @@ public class Boisson {
 	/**
 	 * Quantité utilisée pour chaque ingrédient
 	 */
-	private HashMap<Integer, Ingredient> nbUnitesIngredient;
+	private HashMap<Ingredient, Integer> nbUnitesIngredient;
 	
 	/**
 	 * Constructeur Boisson
@@ -29,7 +29,7 @@ public class Boisson {
 	 * @param recette
 	 * 			quantité pour chaque ingrédient
 	 */
-	public Boisson(String n, int p, HashMap<Integer, Ingredient> recette) {
+	public Boisson(String n, int p, HashMap<Ingredient, Integer> recette) {
 		this.nom = n;
 		this.prix = p;
 		this.nbUnitesIngredient = recette;
@@ -66,14 +66,14 @@ public class Boisson {
 	/**
 	 * @return the nbUnitesIngredient
 	 */
-	public HashMap<Integer, Ingredient> getNbUnitesIngredient() {
+	public HashMap<Ingredient, Integer> getNbUnitesIngredient() {
 		return nbUnitesIngredient;
 	}
 
 	/**
 	 * @param nbUnitesIngredient the nbUnitesIngredient to set
 	 */
-	public void setNbUnitesIngredient(HashMap<Integer, Ingredient> nbUnitesIngredient) {
+	public void setNbUnitesIngredient(HashMap<Ingredient, Integer> nbUnitesIngredient) {
 		this.nbUnitesIngredient = nbUnitesIngredient;
 	}
 	

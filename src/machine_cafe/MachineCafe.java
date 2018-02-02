@@ -9,7 +9,7 @@ public class MachineCafe {
 	/**
 	 * Stock de chaque ingrédient dans la machine
 	 */
-	private ArrayList<Ingredient> listeIngredients;
+	private HashMap<Ingredient, Integer> listeIngredients;
 	
 	/**
 	 * Liste des boissons de la machine
@@ -25,28 +25,46 @@ public class MachineCafe {
 	 * Constructeur de la classe machine à café
 	 */
 	public MachineCafe() {
-		this.listeIngredients = new ArrayList<Ingredient>();
+		this.listeIngredients = new HashMap<Ingredient, Integer>();
 		this.listeBoissons = new ArrayList<Boisson>(3);
 		this.sc = new Scanner(System.in);
 		
 		int quantiteInitiale = 100; // Quantité initiale de chaque ingrédient
 		
 		// Création des ingrédients
-		Ingredient lait = new Lait(quantiteInitiale);
-		Ingredient cafe = new Cafe(quantiteInitiale);
-		Ingredient chocolat = new Chocolat(quantiteInitiale);
-		Ingredient sucre = new Sucre(quantiteInitiale);
+		Ingredient lait = new Lait();
+		Ingredient cafe = new Cafe();
+		Ingredient chocolat = new Chocolat();
+		Ingredient sucre = new Sucre();
 		
 		// Ajout des ingrédients à la machine
-		this.listeIngredients.add(cafe);
-		this.listeIngredients.add(lait);
-		this.listeIngredients.add(chocolat);
-		this.listeIngredients.add(sucre);
+		this.listeIngredients.put(cafe, quantiteInitiale);
+		this.listeIngredients.put(lait, quantiteInitiale);
+		this.listeIngredients.put(chocolat, quantiteInitiale);
+		this.listeIngredients.put(sucre, quantiteInitiale);
 		
 		// Création des boissons
-		HashMap<Integer, Ingredient> map = new HashMap<Integer, Ingredient>();
+		HashMap recette = new HashMap<Ingredient, Integer>();
+		recette.put(cafe, 3);
+		recette.put(sucre, 2);
+		Boisson boisson1 = new Boisson("Café", 1, recette);
 		
-		Boisson boisson1 = new Boisson("Café", 1, new HashMap<Integer, Ingredient>());
+		recette = new HashMap<Ingredient, Integer>();
+		recette.put(cafe, 2);
+		recette.put(lait, 1);
+		recette.put(sucre, 2);
+		Boisson boisson2 = new Boisson("Cappuccino", 2, recette);
+		
+		recette = new HashMap<Ingredient, Integer>();
+		recette.put(chocolat, 3);
+		recette.put(lait, 2);
+		recette.put(sucre, 2);
+		Boisson boisson3 = new Boisson("Chocolat", 3, recette);
+		
+		// Ajout des boissons à la machine
+		this.listeBoissons.add(boisson1);
+		this.listeBoissons.add(boisson2);
+		this.listeBoissons.add(boisson3);
 	}
 	
 	/**
