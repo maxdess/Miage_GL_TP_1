@@ -136,9 +136,29 @@ public class MachineCafe {
 			System.err.println("Veuillez entrer un nombre valide, de type 1, 2, ..., 5.");
 			System.out.println();
 		}
-		
-		
+			
 	}
+	
+	public void remplir(){
+		Scanner sc = new Scanner(System.in);
+		System.out.println("La quantité actuelle de "+this.nom+" est de "+this.qte+" .");
+		System.out.println("Combien d'unité de "+this.nom+"voulez-vous ajouter ?");
+		String s=sc.nextLine();
+		int i= Integer.parseInt(s);
+		if(i>0){
+			this.qte+=i;
+		}
+		if(i>100){
+			this.qte=100;
+		}
+	}
+	
+	public void diminuerStock(int qteBoisson){
+			
+			this.qte=this.qte-qteBoisson;
+			if (this.qte<0) this.qte = 0;
+			
+		}
 	
 	public void verifierStock() {
 		String message="Voici la quantitï¿½ restante de chaques ingrï¿½dient : \n";
@@ -149,4 +169,6 @@ public class MachineCafe {
 		System.out.println(message);
 		
 	}
+	
+	
 }
