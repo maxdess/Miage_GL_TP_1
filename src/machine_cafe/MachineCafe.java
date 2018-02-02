@@ -70,7 +70,7 @@ public class MachineCafe {
 	/**
 	 * @return the listeIngredients
 	 */
-	public ArrayList<Ingredient> getListeIngredients() {
+	public HashMap<Ingredient, Integer> getListeIngredients() {
 		return listeIngredients;
 	}
 
@@ -79,7 +79,7 @@ public class MachineCafe {
 	/**
 	 * @param listeIngredients the listeIngredients to set
 	 */
-	public void setListeIngredients(ArrayList<Ingredient> listeIngredients) {
+	public void setListeIngredients(HashMap<Ingredient, Integer> listeIngredients) {
 		this.listeIngredients = listeIngredients;
 	}
 
@@ -187,8 +187,8 @@ public class MachineCafe {
 	
 	public void remplir(){
 		Scanner sc = new Scanner(System.in);
-		System.out.println("La quantité actuelle de "+this.nom+" est de "+this.qte+" .");
-		System.out.println("Combien d'unité de "+this.nom+"voulez-vous ajouter ?");
+		System.out.println("La quantitï¿½ actuelle de "+this.nom+" est de "+this.qte+" .");
+		System.out.println("Combien d'unitï¿½ de "+this.nom+"voulez-vous ajouter ?");
 		String s=sc.nextLine();
 		int i= Integer.parseInt(s);
 		if(i>0){
