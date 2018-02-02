@@ -1,5 +1,7 @@
 package machine_cafe;
 
+import java.util.Scanner;
+
 public abstract class Ingredient {
 	
 	String nom;
@@ -17,11 +19,32 @@ public abstract class Ingredient {
 		
 	}
 
+	public int getQte() {
+		return qte;
+	}
+
+	public void setQte(int qte) {
+		this.qte = qte;
+	}
+
 	@Override
 	public String toString() {
 		return "[" + nom + "] : [" + qte + "]";
 	}
 	
+	public void remplir(){
+		Scanner sc = new Scanner(System.in);
+		System.out.println("La quantité actuelle de "+this.nom+" est de "+this.qte+" .");
+		System.out.println("Combien d'unité de "+this.nom+"voulez-vous ajouter ?");
+		String s=sc.nextLine();
+		int i= Integer.parseInt(s);
+		if(i>0){
+			this.qte+=i;
+		}
+		if(i>100){
+			this.qte=100;
+		}
+	}
 	
 	
 }
