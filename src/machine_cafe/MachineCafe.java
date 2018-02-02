@@ -46,10 +46,10 @@ public class MachineCafe {
 		this.listeIngredients.put(lait, quantiteInitiale);
 		this.listeIngredients.put(chocolat, quantiteInitiale);
 		this.listeIngredients.put(sucre, quantiteInitiale);
-
+		
+		
 		// Création des boissons
 		HashMap<Ingredient, Integer> recette = new HashMap<Ingredient, Integer>();
-
 		recette.put(cafe, 3);
 		recette.put(sucre, 2);
 		Boisson boisson1 = new Boisson("CafÃ©", 1, recette);
@@ -153,7 +153,7 @@ public class MachineCafe {
 		System.out.print("Votre choix : ");
 		String reponse = sc.nextLine();
 		System.out.println();
-		
+
 		int choix = -1;
 		try {
 			choix = Integer.parseInt(reponse) - 1;
@@ -163,10 +163,10 @@ public class MachineCafe {
 			} else {
 				System.err.println("Votre choix est incorrect.");
 			}
-		}
-		catch(Exception e) {
+		}catch(Exception e) {
 			System.err.println("Veuillez entrer un nombre correct.");
 		}
+		
 	}
 
 	public void ajouterIngredient() {
@@ -221,18 +221,18 @@ public class MachineCafe {
 		Iterator iterator = set.iterator();
 		boolean finish=false;
 		Map.Entry ingredient=null;
-		
-			while(iterator.hasNext() && finish==false) {
 
-				Map.Entry mentry = (Map.Entry)iterator.next();
-				System.out.println(mentry.getKey());
-				if(((Ingredient)mentry.getKey()).getNom().equals(ing)){
-					finish=true;
-					ingredient=mentry;
-					System.out.println("ok");
-				}
+		while(iterator.hasNext() && finish==false) {
+
+			Map.Entry mentry = (Map.Entry)iterator.next();
+			System.out.println(mentry.getKey());
+			if(((Ingredient)mentry.getKey()).getNom().equals(ing)){
+				finish=true;
+				ingredient=mentry;
+				System.out.println("ok");
 			}
-		
+		}
+
 
 		System.out.println("La quantité actuelle de "+ ingredient.getKey()+" est de "+ ingredient.getValue()+" .");
 		System.out.println();
@@ -249,7 +249,7 @@ public class MachineCafe {
 
 	}
 
-	
+
 	public void diminuerStock(Ingredient i, int quantite) {
 		// On récupère la quantité dans la machine
 		int quantiteInitiale = this.listeIngredients.get(i);
@@ -261,17 +261,17 @@ public class MachineCafe {
 		// On met à jour à jour la valeur
 		this.listeIngredients.put(i, nouvelleQuantite);
 	}
-	
+
 
 	public void verifierStock() {
 
 		String message="Voici la quantité restante de chaques ingrédient : \n";
 
 		for(Entry<Ingredient, Integer> entry : this.listeIngredients.entrySet()) {
-		    Ingredient ingredient = entry.getKey();
-		    Integer quantite = entry.getValue();
-		    message += ingredient.getNom() + " : " + quantite + " unité(s) restante(s)\n";
-		    this.diminuerStock(ingredient, quantite);
+			Ingredient ingredient = entry.getKey();
+			Integer quantite = entry.getValue();
+			message += ingredient.getNom() + " : " + quantite + " unité(s) restante(s)\n";
+			this.diminuerStock(ingredient, quantite);
 		}
 		System.out.println(message);
 	}
@@ -280,7 +280,7 @@ public class MachineCafe {
 		System.out.println("Votre boisson " + b.getNom() + " coÃ»te " + b.getPrix() + "â‚¬.");
 		System.out.println("Veuillez entrer votre monnaie.");
 
-		
+
 		System.out.println();
 		System.out.print("Votre choix : ");
 
@@ -300,17 +300,17 @@ public class MachineCafe {
 		}
 
 	}
-	
+
 	public void consommerBoisson(Boisson b) {
 		int index = this.listeBoissons.indexOf(b);
 
 		for(Entry<Ingredient, Integer> entry : this.listeBoissons.get(index).getNbUnitesIngredient().entrySet()) {
-		    Ingredient ingredient = entry.getKey();
-		    Integer quantite = entry.getValue();
-		    System.err.println(ingredient.getNom() + " consomme " + quantite);
-		    this.diminuerStock(ingredient, quantite);
+			Ingredient ingredient = entry.getKey();
+			Integer quantite = entry.getValue();
+			System.err.println(ingredient.getNom() + " consomme " + quantite);
+			this.diminuerStock(ingredient, quantite);
 		}
-		
+
 	}
 
 }
