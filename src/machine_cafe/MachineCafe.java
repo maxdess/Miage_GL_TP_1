@@ -46,8 +46,8 @@ public class MachineCafe {
 		this.listeIngredients.put(lait, quantiteInitiale);
 		this.listeIngredients.put(chocolat, quantiteInitiale);
 		this.listeIngredients.put(sucre, quantiteInitiale);
-		
-		
+
+
 		// Création des boissons
 		HashMap<Ingredient, Integer> recette = new HashMap<Ingredient, Integer>();
 		recette.put(cafe, 3);
@@ -166,7 +166,7 @@ public class MachineCafe {
 		}catch(Exception e) {
 			System.err.println("Veuillez entrer un nombre correct.");
 		}
-		
+
 	}
 
 	public void ajouterIngredient() {
@@ -223,28 +223,32 @@ public class MachineCafe {
 		Map.Entry ingredient=null;
 
 		while(iterator.hasNext() && finish==false) {
-
 			Map.Entry mentry = (Map.Entry)iterator.next();
-			System.out.println(mentry.getKey());
 			if(((Ingredient)mentry.getKey()).getNom().equals(ing)){
 				finish=true;
 				ingredient=mentry;
-				System.out.println("ok");
 			}
 		}
 
 
 		System.out.println("La quantité actuelle de "+ ingredient.getKey()+" est de "+ ingredient.getValue()+" .");
 		System.out.println();
-		System.out.println("Combien d'unité de "+ingredient.getKey()+"voulez-vous ajouter ?");
-		String s=this.sc.nextLine();
-		int i= Integer.parseInt(s);
+		System.out.println("Combien d'unité de "+ingredient.getKey()+" voulez-vous ajouter ?");
+		try{
+			String s=this.sc.nextLine();
 
-		if(i>0){
-			ingredient.setValue(i+(int)ingredient.getValue());
-		}
-		if(i>100){
-			ingredient.setValue(100);
+			int i= Integer.parseInt(s);
+
+			if(i>0){
+				ingredient.setValue(i+(int)ingredient.getValue());
+			}
+			if((int)ingredient.getValue()>100){
+				ingredient.setValue(100);
+			}
+
+		}catch(Exception e) {
+			System.err.println("Veuillez entrer un nombre valide, de type 1, 2, ..., 100.");
+			System.out.println();
 		}
 
 	}
