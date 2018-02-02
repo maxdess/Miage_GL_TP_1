@@ -30,6 +30,7 @@ public class Main {
 				
 				switch(choix) {
 				case 1: // acheter boisson
+					machine.acheterBoisson();
 					break;
 				case 2: // ajouter boisson
 					break;
