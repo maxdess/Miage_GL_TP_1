@@ -1,8 +1,9 @@
 package machine_cafe;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
-public class Boisson {
+public class Boisson implements Serializable {
 	
 	/**
 	 * Nom de la boisson

@@ -1,6 +1,8 @@
 package machine_cafe;
 
-public class Cafe extends Ingredient {
+import java.io.Serializable;
+
+public class Cafe extends Ingredient implements Serializable{
 
 	public Cafe() {
 		super();

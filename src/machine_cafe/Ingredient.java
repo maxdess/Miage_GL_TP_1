@@ -1,8 +1,9 @@
 package machine_cafe;
 
+import java.io.Serializable;
 import java.util.Scanner;
 
-public abstract class Ingredient {
+public abstract class Ingredient implements Serializable {
 	
 	protected String nom;
 	

@@ -7,9 +7,22 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Scanner;
 import java.util.Set;
+import java.io.Serializable;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
-public class MachineCafe {
 
+public class MachineCafe implements Serializable{
+	
 	/**
 	 * Stock de chaque ingrédient dans la machine
 	 */
@@ -23,7 +36,7 @@ public class MachineCafe {
 	/**
 	 * Scanner pour lire les commandes au clavier
 	 */
-	private Scanner sc;
+	private static Scanner sc=new Scanner(System.in);;
 
 	/**
 	 * Constructeur de la classe machine Ã  cafÃ©
@@ -31,11 +44,11 @@ public class MachineCafe {
 	public MachineCafe() {
 		this.listeIngredients = new HashMap<Ingredient, Integer>();
 		this.listeBoissons = new ArrayList<Boisson>(3);
-		this.sc = new Scanner(System.in);
+		
 
 		int quantiteInitiale = 100; // QuantitÃ© initiale de chaque ingrÃ©dient
 
-		// CrÃ©ation des ingrÃ©dients
+		// Création des ingrédients
 		Ingredient lait = new Lait();
 		Ingredient cafe = new Cafe();
 		Ingredient chocolat = new Chocolat();
@@ -52,7 +65,7 @@ public class MachineCafe {
 		HashMap<Ingredient, Integer> recette = new HashMap<Ingredient, Integer>();
 		recette.put(cafe, 3);
 		recette.put(sucre, 2);
-		Boisson boisson1 = new Boisson("CafÃ©", 1, recette);
+		Boisson boisson1 = new Boisson("Café", 1, recette);
 
 		recette = new HashMap<Ingredient, Integer>();
 		recette.put(cafe, 2);
@@ -70,6 +83,25 @@ public class MachineCafe {
 		this.listeBoissons.add(boisson1);
 		this.listeBoissons.add(boisson2);
 		this.listeBoissons.add(boisson3);
+	}
+	
+	public void sauvegarder(){
+	    ObjectOutputStream oos;
+	    try {
+	      oos = new ObjectOutputStream(
+	              new BufferedOutputStream(
+	                new FileOutputStream(
+	                  new File("Sauvegarde.txt"))));
+	        	
+	      //Nous allons écrire chaque objet Game dans le fichier
+	      oos.writeObject(this);
+	      //Ne pas oublier de fermer le flux !
+	      oos.close();
+	    } catch (FileNotFoundException e) {
+	        e.printStackTrace();
+	      } catch (IOException e) {
+	        e.printStackTrace();
+	      }  
 	}
 
 	/**
@@ -109,7 +141,7 @@ public class MachineCafe {
 
 
 	public void acheterBoisson() {
-		System.out.println("Quelle boisson souhaitez-vous acheter ? Tapez le numÃ©ro de l'action que vous voulez acheter.");
+		System.out.println("Quelle boisson souhaitez-vous acheter ? Tapez le numéro de l'action que vous voulez acheter.");
 		System.out.println();
 		for (Boisson b : this.listeBoissons) {
 			System.out.println((this.listeBoissons.indexOf(b) + 1) + " - " + b.getNom());
@@ -139,6 +171,29 @@ public class MachineCafe {
 	}
 
 	public void modifierBoisson() {
+		System.out.println("Quelle boisson souhaitez-vous modifier ? Tapez le numéro de la boisson que vous voulez modifier.");
+		System.out.println();
+		for (Boisson b : this.listeBoissons) {
+			System.out.println((this.listeBoissons.indexOf(b) + 1) + " - " + b.getNom());
+		}
+		System.out.println(this.listeBoissons.size() + 1 + " - Annuler");
+		System.out.println();
+		System.out.print("Votre choix : ");
+		String reponse = sc.nextLine();
+		System.out.println();
+
+		int choix = -1;
+		try {
+			choix = Integer.parseInt(reponse) - 1;
+			if (choix >= 0 && choix < this.listeBoissons.size()) {
+				this.listeBoissons.remove(choix);
+				System.out.println("Votre boisson a bien été supprimée.");
+			} else {
+				System.err.println("Votre choix est incorrect.");
+			}
+		}catch(Exception e) {
+			System.err.println("Veuillez entrer un nombre correct.");
+		}
 
 	}
 
@@ -281,7 +336,7 @@ public class MachineCafe {
 	}
 
 	public void demanderPaiement(Boisson b) {
-		System.out.println("Votre boisson " + b.getNom() + " coÃ»te " + b.getPrix() + "â‚¬.");
+		System.out.println("Votre boisson " + b.getNom() + " coûte " + b.getPrix() + "€.");
 		System.out.println("Veuillez entrer votre monnaie.");
 
 

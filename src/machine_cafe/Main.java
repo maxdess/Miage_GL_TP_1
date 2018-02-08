@@ -1,14 +1,47 @@
 package machine_cafe;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.Scanner;
+import java.io.ObjectInputStream;
+import java.io.FileOutputStream;
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
 
 public class Main {
 
 	public static void main(String[] args) {
 		boolean end = false; // booléen qui permet de quitter l'application
 		Scanner sc = new Scanner(System.in); // scanner qui permet de lire le clavier
-		MachineCafe machine = new MachineCafe();
+		ObjectInputStream ois;
+		MachineCafe machine =null;
+		try {
+			ois = new ObjectInputStream(
+					new BufferedInputStream(
+							new FileInputStream(
+									new File("Sauvegarde.txt"))));
+
+			
+			 machine=(MachineCafe)ois.readObject();
+			 ois.close();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}catch (FileNotFoundException e) {
+		      e.printStackTrace();
+	    } catch (IOException e) {
+	      e.printStackTrace();
+	    }    
+
 		
+		if (machine==null){
+			 machine =  new MachineCafe();
+		}
+
 		while (!end) {
 			System.out.println("Que voulez-vous faire ? Tapez le numéro de l'action que vous voulez exécuter.");
 			System.out.println();
@@ -23,11 +56,11 @@ public class Main {
 			System.out.print("Votre choix : ");
 			String reponse = sc.nextLine();
 			System.out.println();
-			
+
 			int choix = -1;
 			try {
 				choix = Integer.parseInt(reponse);
-				
+
 				switch(choix) {
 				case 1: // acheter boisson
 					machine.acheterBoisson();
@@ -35,6 +68,7 @@ public class Main {
 				case 2: // ajouter boisson
 					break;
 				case 3: // modifier boisson
+					machine.modifierBoisson();
 					break;
 				case 4: // supprimer boisson
 					machine.supprimerBoisson();
@@ -58,6 +92,7 @@ public class Main {
 				System.err.println("Veuillez entrer un nombre valide, de type 1, 2, ..., 7.");
 				System.out.println();
 			}
+			machine.sauvegarder(); 
 		}
 		// Affichage à la sortie de la boucle while
 		System.out.println("Merci d'avoir utilisé notre machine.");
