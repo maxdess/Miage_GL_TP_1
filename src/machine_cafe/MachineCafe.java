@@ -19,6 +19,8 @@ public class MachineCafe {
 	 * Liste des boissons de la machine
 	 */
 	private ArrayList<Boisson> listeBoissons;
+	
+	public static int NB_BOISSONS_MAX = 3;
 
 	/**
 	 * Scanner pour lire les commandes au clavier
@@ -30,7 +32,7 @@ public class MachineCafe {
 	 */
 	public MachineCafe() {
 		this.listeIngredients = new HashMap<Ingredient, Integer>();
-		this.listeBoissons = new ArrayList<Boisson>(3);
+		this.listeBoissons = new ArrayList<Boisson>(NB_BOISSONS_MAX);
 		this.sc = new Scanner(System.in);
 
 		int quantiteInitiale = 100; // QuantitÃ© initiale de chaque ingrÃ©dient
@@ -46,8 +48,8 @@ public class MachineCafe {
 		this.listeIngredients.put(lait, quantiteInitiale);
 		this.listeIngredients.put(chocolat, quantiteInitiale);
 		this.listeIngredients.put(sucre, quantiteInitiale);
-		
-		
+
+
 		// Création des boissons
 		HashMap<Ingredient, Integer> recette = new HashMap<Ingredient, Integer>();
 		recette.put(cafe, 3);
@@ -109,7 +111,7 @@ public class MachineCafe {
 
 
 	public void acheterBoisson() {
-		System.out.println("Quelle boisson souhaitez-vous acheter ? Tapez le numÃ©ro de l'action que vous voulez acheter.");
+		System.out.println("Quelle boisson souhaitez-vous acheter ? Tapez le numéro de l'action que vous voulez acheter.");
 		System.out.println();
 		for (Boisson b : this.listeBoissons) {
 			System.out.println((this.listeBoissons.indexOf(b) + 1) + " - " + b.getNom());
@@ -122,8 +124,8 @@ public class MachineCafe {
 
 		int choix = -1;
 		try {
-			choix = Integer.parseInt(reponse);
-			if (choix >= 0 && choix < this.listeBoissons.size()) {
+			choix = Integer.parseInt(reponse) - 1;
+			if (choix >= 0 && choix <= this.listeBoissons.size()) {
 				this.demanderPaiement(this.listeBoissons.get(choix - 1));
 			} else {
 				System.err.println("Votre choix est incorrect.");
@@ -135,7 +137,53 @@ public class MachineCafe {
 	}
 
 	public void ajouterBoisson() {
-
+		if (this.listeBoissons.size() >= NB_BOISSONS_MAX) {
+			System.err.println("Le nombre maximum de boissons est atteint. Veuillez en supprimer une avant d'en ajouter une nouvelle.");
+		}
+		else {
+			System.out.println("Quelle boisson souhaitez-vous ajouter ? Entrez le nom de la boisson.");
+			System.out.println();
+			System.out.print("Votre choix : ");
+			String boisson = sc.nextLine();
+			System.out.println();
+			
+			boolean valide = false;
+			int prix = -1;
+			while (!valide) {
+				try {
+					System.out.println("Quel est son prix (un entier) ?");
+					System.out.println();
+					System.out.print("Votre choix : ");
+					String choix = sc.next();
+					prix = Integer.parseInt(choix);	
+					valide = true;
+				}
+				catch (Exception e) {
+					System.err.println("Le prix n'est pas un entier.");
+				}
+			}
+			
+			HashMap<Ingredient, Integer> recette = new HashMap<Ingredient, Integer>();
+			
+			for (Ingredient i : this.listeIngredients.keySet()) {
+				valide = false;
+				while (!valide) {
+					try {
+						System.out.println(" Choisissez la quantité de : " + i.getNom());
+						System.out.print("Votre choix : ");
+						String res = sc.next();
+						int quantite = Integer.parseInt(res);
+						valide = true;
+						recette.put(i, quantite);
+					}
+					catch (Exception e) {
+						System.err.println("Merci de renseigner la bonne quantité.");
+					}
+				}
+			}
+			Boisson nouvelleBoisson = new Boisson(boisson, prix, recette);
+			this.listeBoissons.add(nouvelleBoisson);
+		}
 	}
 
 	public void modifierBoisson() {
@@ -157,7 +205,7 @@ public class MachineCafe {
 		int choix = -1;
 		try {
 			choix = Integer.parseInt(reponse) - 1;
-			if (choix >= 0 && choix < this.listeBoissons.size()) {
+			if (choix >= 0 && choix <= this.listeBoissons.size()) {
 				this.listeBoissons.remove(choix);
 				System.out.println("Votre boisson a bien été supprimée.");
 			} else {
@@ -166,7 +214,7 @@ public class MachineCafe {
 		}catch(Exception e) {
 			System.err.println("Veuillez entrer un nombre correct.");
 		}
-		
+
 	}
 
 	public void ajouterIngredient() {
@@ -236,7 +284,7 @@ public class MachineCafe {
 
 		System.out.println("La quantité actuelle de "+ ingredient.getKey()+" est de "+ ingredient.getValue()+" .");
 		System.out.println();
-		System.out.println("Combien d'unité de "+ingredient.getKey()+"voulez-vous ajouter ?");
+		System.out.println("Combien d'unité de "+ingredient.getKey()+" voulez-vous ajouter ?");
 		String s=this.sc.nextLine();
 		int i= Integer.parseInt(s);
 
@@ -264,14 +312,15 @@ public class MachineCafe {
 
 
 	public void verifierStock() {
-
+		// Message initial
 		String message="Voici la quantité restante de chaques ingrédient : \n";
 
+		// Pour chaque ingrédient de la machine
 		for(Entry<Ingredient, Integer> entry : this.listeIngredients.entrySet()) {
 			Ingredient ingredient = entry.getKey();
 			Integer quantite = entry.getValue();
+			// On affiche l'ingrédient et la quantité restante
 			message += ingredient.getNom() + " : " + quantite + " unité(s) restante(s)\n";
-			this.diminuerStock(ingredient, quantite);
 		}
 		System.out.println(message);
 	}
@@ -307,7 +356,6 @@ public class MachineCafe {
 		for(Entry<Ingredient, Integer> entry : this.listeBoissons.get(index).getNbUnitesIngredient().entrySet()) {
 			Ingredient ingredient = entry.getKey();
 			Integer quantite = entry.getValue();
-			System.err.println(ingredient.getNom() + " consomme " + quantite);
 			this.diminuerStock(ingredient, quantite);
 		}
 
