@@ -66,6 +66,7 @@ public class Main {
 					machine.acheterBoisson();
 					break;
 				case 2: // ajouter boisson
+					machine.ajouterBoisson();
 					break;
 				case 3: // modifier boisson
 					machine.modifierBoisson();
