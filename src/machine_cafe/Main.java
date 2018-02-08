@@ -1,10 +1,12 @@
 package machine_cafe;
 
 import java.io.BufferedOutputStream;
+import java.io.BufferedWriter;
 import java.io.EOFException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -33,7 +35,11 @@ public class Main {
 		} catch (EOFException e) {
 			machine =  new MachineCafe();
 		}catch (FileNotFoundException e) {
-			e.printStackTrace();
+			try {
+				BufferedWriter writer = new BufferedWriter(new FileWriter(new File("Sauvegarde.txt")));
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
