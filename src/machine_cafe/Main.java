@@ -1,6 +1,7 @@
 package machine_cafe;
 
 import java.io.BufferedOutputStream;
+import java.io.EOFException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -26,20 +27,24 @@ public class Main {
 							new FileInputStream(
 									new File("Sauvegarde.txt"))));
 
-			
-			 machine=(MachineCafe)ois.readObject();
-			 ois.close();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}catch (FileNotFoundException e) {
-		      e.printStackTrace();
-	    } catch (IOException e) {
-	      e.printStackTrace();
-	    }    
 
-		
+			machine=(MachineCafe)ois.readObject();
+			ois.close();
+		} catch (EOFException e) {
+			machine =  new MachineCafe();
+		}catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			
+		}
+
+
 		if (machine==null){
-			 machine =  new MachineCafe();
+			machine =  new MachineCafe();
 		}
 
 		while (!end) {
