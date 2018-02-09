@@ -1,5 +1,12 @@
 package machine_cafe;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -7,18 +14,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Scanner;
 import java.util.Set;
-import java.io.Serializable;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 
 
 public class MachineCafe implements Serializable{
@@ -41,7 +36,8 @@ public class MachineCafe implements Serializable{
 	/**
 	 * Scanner pour lire les commandes au clavier
 	 */
-	private static Scanner sc=new Scanner(System.in);;
+	private static Scanner sc=new Scanner(System.in);
+
 
 	/**
 	 * Constructeur de la classe machine à café
@@ -128,32 +124,36 @@ public class MachineCafe implements Serializable{
 	 */
 	public void acheterBoisson() {
 		String message = "Quelle boisson souhaitez-vous acheter ? Tapez le numéro de l'action que vous voulez acheter. \n";
-		//System.out.println("Quelle boisson souhaitez-vous acheter ? Tapez le numéro de l'action que vous voulez acheter.");
-		//System.out.println();
+
 		for (Boisson b : this.listeBoissons) {
 			message += (this.listeBoissons.indexOf(b) + 1) + " - " + b.getNom() + "\n";
-			//System.out.println((this.listeBoissons.indexOf(b) + 1) + " - " + b.getNom());
 		}
+
 		message += 	this.listeBoissons.size() + 1 + " - Annuler\n";
-		//System.out.println(this.listeBoissons.size() + 1 + " - Annuler");
-		//System.out.println();
-		//System.out.print("Votre choix : ");
 		System.out.println(message);
 
 		int choix = -1;
 		boolean valide = false;
+
 		while (!valide) {
 			try {
 				System.out.print("Votre choix : ");
 				String reponse = sc.nextLine();
 				System.out.println();
-				
+
 				choix = Integer.parseInt(reponse) - 1;
-				
-				if (choix >= 0 && choix <= this.listeBoissons.size()) {
+
+				// Si on choisit une boisson on demande le paiement
+				if (choix >= 0 && choix < this.listeBoissons.size()) {
 					valide = true;
 					this.demanderPaiement(this.listeBoissons.get(choix));
-				} else {
+				}
+				// Si on annule on retourne au menu principal
+				else if (choix == this.listeBoissons.size()) {
+					valide = true;
+				}
+				// Sinon on affiche une erreur et on redemande
+				else {
 					System.err.println("Votre choix est incorrect.");
 				}
 			}
@@ -177,126 +177,201 @@ public class MachineCafe implements Serializable{
 			System.out.print("Votre choix : ");
 			String boisson = sc.nextLine();
 			System.out.println();
-
-			boolean valide = false;
-			int prix = -1;
-			while (!valide) {
-				try {
-					System.out.println("Quel est son prix (un entier) ?");
-					System.out.println();
-					System.out.print("Votre choix : ");
-					String choix = sc.next();
-					prix = Integer.parseInt(choix);	
-					valide = true;
+			
+			boolean dejaPresent = false;
+			int compteur = 0; 
+			while (!dejaPresent && compteur < this.listeBoissons.size()) {
+				if (this.listeBoissons.get(compteur).getNom().equals(boisson)) {
+					dejaPresent = true;
 				}
-				catch (Exception e) {
-					System.err.println("Le prix n'est pas un entier.");
-				}
+				compteur++;
 			}
-
-			HashMap<Ingredient, Integer> recette = new HashMap<Ingredient, Integer>();
-
-			for (Ingredient i : this.listeIngredients.keySet()) {
-				valide = false;
+			
+			if (dejaPresent) {
+				System.err.println("Une boisson portant ce nom existe déjà, ajout annulé.");
+			}
+			else {
+				boolean valide = false;
+				int prix = -1;
 				while (!valide) {
 					try {
-						System.out.println(" Choisissez la quantité de : " + i.getNom());
+						System.out.println("Quel est son prix (un entier) ?");
+						System.out.println();
 						System.out.print("Votre choix : ");
-						String res = sc.next();
-						int quantite = Integer.parseInt(res);
+						String choix = sc.next();
+						prix = Integer.parseInt(choix);	
 						valide = true;
-						recette.put(i, quantite);
 					}
 					catch (Exception e) {
-						System.err.println("Merci de renseigner la bonne quantité.");
+						System.err.println("Le prix n'est pas un entier.");
 					}
 				}
+	
+				HashMap<Ingredient, Integer> recette = new HashMap<Ingredient, Integer>();
+	
+				for (Ingredient i : this.listeIngredients.keySet()) {
+					valide = false;
+					while (!valide) {
+						try {
+							System.out.println(" Choisissez la quantité de : " + i.getNom());
+							System.out.print("Votre choix : ");
+							String res = sc.next();
+							int quantite = Integer.parseInt(res);
+							valide = true;
+							recette.put(i, quantite);
+						}
+						catch (Exception e) {
+							System.err.println("Merci de renseigner la bonne quantité.");
+						}
+					}
+				}
+				Boisson nouvelleBoisson = new Boisson(boisson, prix, recette);
+				this.listeBoissons.add(nouvelleBoisson);
 			}
-			Boisson nouvelleBoisson = new Boisson(boisson, prix, recette);
-			this.listeBoissons.add(nouvelleBoisson);
 		}
 	}
 
-	
+
 	/**
 	 * Méthode qui permet de modifier une boisson de la machine à café
 	 */
 	public void modifierBoisson() {
-		System.out.println("Quelle boisson souhaitez-vous modifier ? Tapez le numéro de la boisson que vous voulez modifier.");
-		System.out.println();
+		String message = "Quelle boisson souhaitez-vous modifier ? Tapez le numéro de la boisson à modifier. \n";
+
 		for (Boisson b : this.listeBoissons) {
-			System.out.println((this.listeBoissons.indexOf(b) + 1) + " - " + b.getNom());
+			message += (this.listeBoissons.indexOf(b) + 1) + " - " + b.getNom() + "\n";
 		}
-		System.out.println(this.listeBoissons.size() + 1 + " - Annuler");
-		System.out.println();
-		System.out.print("Votre choix : ");
-		String reponse = sc.nextLine();
-		System.out.println();
+
+		message += 	this.listeBoissons.size() + 1 + " - Annuler\n";
+		System.out.println(message);
 
 		int choix = -1;
-		try {
-			choix = Integer.parseInt(reponse) - 1;
-			if (choix >= 0 && choix < this.listeBoissons.size()) {
-				this.listeBoissons.remove(choix);
-				System.out.println("Votre boisson a bien été supprimée.");
-			} else {
-				System.err.println("Votre choix est incorrect.");
-			}
-		}catch(Exception e) {
-			System.err.println("Veuillez entrer un nombre correct.");
-		}
+		boolean valide = false;
 
+		while (!valide) {
+			try {
+				System.out.print("Votre choix : ");
+				String reponse = sc.nextLine();
+				System.out.println();
+
+				choix = Integer.parseInt(reponse) - 1;
+
+				// Si on choisit une boisson on passe à la suite du programme
+				if (choix >= 0 && choix < this.listeBoissons.size()) {
+					valide = true;
+
+					// On crée la nouvelle recette
+					HashMap<Ingredient, Integer> recette = new HashMap<Ingredient, Integer>();
+
+
+					// Pour chaque ingrédient on demande la nouvelle quantité
+					for(Entry<Ingredient, Integer> entry : this.listeBoissons.get(choix).getNbUnitesIngredient().entrySet()) {
+						Ingredient ingredient = entry.getKey();
+						Integer quantite = entry.getValue();
+						// On affiche l'ingrédient et la quantité restante
+						message = "La quantité actuelle de " + ingredient.getNom() + " est : " + quantite + " unité(s) restante(s)\n";
+						System.out.println(message);
+						int nouvelleQuantite = -1;
+						valide = false;
+						while (!valide) {
+							message = "Quelle quantité souhaitez-vous ?\n";
+							message += "Votre choix : ";
+							System.out.print(message);
+
+							reponse = sc.next();
+							System.out.println();
+
+							try {
+								nouvelleQuantite = Integer.parseInt(reponse);
+								valide = true;
+							}
+							catch (Exception e) {
+								System.err.println("Veuillez entrer un nombre valide");
+							}
+						}
+						recette.put(ingredient, nouvelleQuantite);
+					}
+					// On remplace l'ancienne recette par la nouvelle
+					this.listeBoissons.get(choix).setNbUnitesIngredient(recette);
+				}
+				// Si on annule on retourne au menu principal
+				else if (choix == this.listeBoissons.size()) {
+					valide = true;
+				}
+				// Sinon on affiche une erreur et on redemande
+				else {
+					System.err.println("Votre choix est incorrect.");
+				}
+			}
+			catch(Exception e) {
+				System.err.println("Veuillez entrer un nombre correct.");
+			}
+		}
 	}
 
-	
+
 	/**
 	 * Méthode qui permet de supprimer une boisson de la machine à café
 	 */
 	public void supprimerBoisson() {
-		System.out.println("Quelle boisson souhaitez-vous supprimer ? Tapez le numéro de l'action que vous voulez acheter.");
-		System.out.println();
+		String message = "Quelle boisson souhaitez-vous supprimer ? Tapez le numéro de la boisson à supprimer.\n";
 		for (Boisson b : this.listeBoissons) {
-			System.out.println((this.listeBoissons.indexOf(b) + 1) + " - " + b.getNom());
+			message += (this.listeBoissons.indexOf(b) + 1) + " - " + b.getNom() + "\n";
 		}
-		System.out.println(this.listeBoissons.size() + 1 + " - Annuler");
-		System.out.println();
-		System.out.print("Votre choix : ");
-		String reponse = sc.nextLine();
-		System.out.println();
+		message += this.listeBoissons.size() + 1 + " - Annuler\n";
+		System.out.println(message);
 
+		boolean valide = false;
 		int choix = -1;
-		try {
-			choix = Integer.parseInt(reponse) - 1;
-			if (choix >= 0 && choix <= this.listeBoissons.size()) {
-				this.listeBoissons.remove(choix);
-				System.out.println("Votre boisson a bien été supprimée.");
-			} else {
-				System.err.println("Votre choix est incorrect.");
-			}
-		}catch(Exception e) {
-			System.err.println("Veuillez entrer un nombre correct.");
-		}
 
+		while (!valide) {
+			System.out.print("Votre choix : ");
+			String reponse = sc.nextLine();
+			System.out.println();
+
+			try {
+				choix = Integer.parseInt(reponse) - 1;
+				if (choix >= 0 && choix < this.listeBoissons.size()) {
+					valide = true;
+					// On supprime la boisson
+					this.listeBoissons.remove(choix);
+					System.out.println("Votre boisson a bien été supprimée.");
+				}
+				else if (choix == this.listeBoissons.size()) {
+					valide = true;
+				}
+				else {
+					System.err.println("Votre choix est incorrect.");
+				}
+			}catch(Exception e) {
+				System.err.println("Veuillez entrer un nombre correct.");
+			}
+		}
 	}
 
-	
+
 	/**
 	 * Méthode qui permet de remplir un ingrédient de la machine à café
 	 */
 	public void ajouterIngredient() {
-		System.out.println("Quel ingredient voulez-vous ajouter ? ");
-		System.out.println();
-		System.out.println("1 - Cafe");
-		System.out.println("2 - Lait");
-		System.out.println("3 - Chocolat");
-		System.out.println("4 - Sucre");
-		System.out.println("5 - Retour au menu");
-		System.out.println();
+		int compteur = 1;
+		String message = "Quel ingrédient souhaitez-vous remplir ?\n";
+		
+		for(Entry<Ingredient, Integer> entry : this.listeIngredients.entrySet()) {
+			Ingredient ingredient = entry.getKey();
+			Integer quantite = entry.getValue();
+			message += compteur + " - " + ingredient.getNom() + "\n";
+			compteur++;
+		}
+		
+		message += compteur + " - Annuler\n";
+		System.out.println(message);
+		
+		
 		System.out.print("Votre choix : ");
 		System.out.println();
 
-		String reponse = this.sc.nextLine();
-
+		String reponse = sc.nextLine();
 		int choix = -1;
 
 		try {
@@ -365,7 +440,7 @@ public class MachineCafe implements Serializable{
 
 	}
 
-	
+
 	/**
 	 * Méthode qui permet de vérifier les stocks des ingrédients de la machine
 	 */
@@ -383,7 +458,7 @@ public class MachineCafe implements Serializable{
 		System.out.println(message);
 	}
 
-	
+
 	/**
 	 * Méthode qui demander à l'utilisateur de payer lors de lachat d'une boisson
 	 * 
@@ -426,8 +501,8 @@ public class MachineCafe implements Serializable{
 			this.diminuerStock(ingredient, quantite);
 		}
 	}
-	
-	
+
+
 	/**
 	 * Méthode qui permet de diminuer le stock d'un ingrédient dans la machine
 	 * 
