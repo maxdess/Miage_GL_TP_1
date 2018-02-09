@@ -31,7 +31,7 @@ public class MachineCafe implements Serializable{
 	/**
 	 * Nombre maximum de boissons dans la machine
 	 */
-	public static int NB_BOISSONS_MAX = 3;
+	public static int NB_BOISSONS_MAX = 5;
 
 	/**
 	 * Scanner pour lire les commandes au clavier
@@ -79,11 +79,25 @@ public class MachineCafe implements Serializable{
 		recette.put(lait, 2);
 		recette.put(sucre, 2);
 		Boisson boisson3 = new Boisson("Chocolat", 3, recette);
+		
+		recette = new HashMap<Ingredient, Integer>();
+		recette.put(cafe, 3);
+		recette.put(lait, 2);
+		recette.put(sucre, 2);
+		Boisson boisson4 = new Boisson("Café au lait", 4, recette);
+
+		recette = new HashMap<Ingredient, Integer>();
+		recette.put(cafe, 3);
+		recette.put(chocolat, 2);
+		recette.put(sucre, 2);
+		Boisson boisson5 = new Boisson("Moca", 5, recette);
 
 		// Ajout des boissons à la machine
 		this.listeBoissons.add(boisson1);
 		this.listeBoissons.add(boisson2);
 		this.listeBoissons.add(boisson3);
+		this.listeBoissons.add(boisson4);
+		this.listeBoissons.add(boisson5);
 	}
 
 
