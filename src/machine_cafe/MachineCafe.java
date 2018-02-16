@@ -192,7 +192,7 @@ public class MachineCafe implements Serializable{
 			System.out.print("Votre choix : ");
 			String boisson = sc.nextLine();
 			System.out.println();
-			
+
 			boolean dejaPresent = false;
 			int compteur = 0; 
 			while (!dejaPresent && compteur < this.listeBoissons.size()) {
@@ -201,7 +201,7 @@ public class MachineCafe implements Serializable{
 				}
 				compteur++;
 			}
-			
+
 			if (dejaPresent) {
 				System.err.println("Une boisson portant ce nom existe déjà, ajout annulé.");
 			}
@@ -221,9 +221,9 @@ public class MachineCafe implements Serializable{
 						System.err.println("Le prix n'est pas un entier.");
 					}
 				}
-	
+
 				HashMap<Ingredient, Integer> recette = new HashMap<Ingredient, Integer>();
-	
+
 				for (Ingredient i : this.listeIngredients.keySet()) {
 					valide = false;
 					while (!valide) {
@@ -371,18 +371,18 @@ public class MachineCafe implements Serializable{
 	public void ajouterIngredient() {
 		int compteur = 1;
 		String message = "Quel ingrédient souhaitez-vous remplir ?\n";
-		
+
 		for(Entry<Ingredient, Integer> entry : this.listeIngredients.entrySet()) {
 			Ingredient ingredient = entry.getKey();
 			Integer quantite = entry.getValue();
 			message += compteur + " - " + ingredient.getNom() + "\n";
 			compteur++;
 		}
-		
+
 		message += compteur + " - Annuler\n";
 		System.out.println(message);
-		
-		
+
+
 		System.out.print("Votre choix : ");
 		System.out.println();
 
@@ -492,8 +492,8 @@ public class MachineCafe implements Serializable{
 			montant = Integer.parseInt(monnaie);
 			if (montant >= b.getPrix()) {
 				Boisson boissonBis=this.demanderNiveauSucre(b);
-
 				System.out.println("Voici votre boisson !");
+				//On diminue le stock des ingrédient utiliser pour réaliser la boisson
 				this.consommerBoisson(boissonBis);
 			} else {
 				System.err.println("Vous n'avez pas entré assez d'argent.");
@@ -507,8 +507,11 @@ public class MachineCafe implements Serializable{
 	public Boisson demanderNiveauSucre(Boisson b){
 
 		Boisson boisson=null;
-		boisson=(Boisson) SerializationUtils.clone(b);
 		
+		// on crée une boisson temporaire sur le model de la boisson existante pour ne pas modifier 
+		//le niveau de sucre pour toute les prochaine boisson
+		boisson=(Boisson) SerializationUtils.clone(b);
+
 		for(Entry<Ingredient, Integer> entry : boisson.getNbUnitesIngredient().entrySet()) {
 			Ingredient ingredient = entry.getKey();
 			if(ingredient.getNom().equals("Sucre")){
@@ -521,6 +524,7 @@ public class MachineCafe implements Serializable{
 					try {
 						int niveau = Integer.parseInt(sucre);
 						if(niveau<=5 && niveau >=0){
+							 //on modifie le niveau de sucre de cette boisson temporaire
 							entry.setValue(niveau);
 							valide=true;
 						}else{
@@ -544,17 +548,16 @@ public class MachineCafe implements Serializable{
 	 * @param b
 	 */
 	public void consommerBoisson(Boisson b) {	
-		
+
 		for(Entry<Ingredient, Integer> entry : b.getNbUnitesIngredient().entrySet()) {
 			try{
 				Ingredient ingredient = entry.getKey();
 				Integer quantite = entry.getValue();
-				System.out.println(ingredient+""+quantite);
 				this.diminuerStock(ingredient, quantite);
 			}catch(Exception e) {
 				e.printStackTrace();
 			}
-			
+
 		}
 	}
 
@@ -568,24 +571,20 @@ public class MachineCafe implements Serializable{
 	 * 			quantité du stock à diminuer
 	 */
 	public void diminuerStock(Ingredient i, int quantite) {
+		//on parcourt la liste des ingredients de la machine pour trouver lequel diminuer
 		for(Entry<Ingredient, Integer> entry : this.listeIngredients.entrySet()) {
 			if(entry.getKey().getNom().equals(i.getNom())){
+				// On récupère la quantité dans la machine
 				int quantiteInitiale=entry.getValue();
+				// On diminue le stock dans la machine
 				int nouvelleQuantite = quantiteInitiale - quantite;
 				if (nouvelleQuantite < 0) {
 					nouvelleQuantite = 0;
 				}
+				// On met à jour à jour la valeur
 				entry.setValue(nouvelleQuantite);
 			}
 		}
-		/*
-		// On récupère la quantité dans la machine
-		int quantiteInitiale = this.listeIngredients.get(i);
-		System.out.println(quantiteInitiale);
-		// On diminue le stock dans la machine
-		
-		// On met à jour à jour la valeur
-		//this.listeIngredients.put(i, nouvelleQuantite);*/
 	}
 
 	public void AugmenterStock(Ingredient i, int quantite) {
