@@ -1,5 +1,12 @@
 package machine_cafe;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -7,14 +14,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Scanner;
 import java.util.Set;
-import java.io.Serializable;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
 
+import org.apache.commons.lang3.SerializationUtils;
 
 public class MachineCafe implements Serializable{
 
@@ -78,7 +79,7 @@ public class MachineCafe implements Serializable{
 		recette.put(lait, 2);
 		recette.put(sucre, 2);
 		Boisson boisson3 = new Boisson("Chocolat", 3, recette);
-		
+
 		recette = new HashMap<Ingredient, Integer>();
 		recette.put(cafe, 3);
 		recette.put(lait, 2);
@@ -156,9 +157,9 @@ public class MachineCafe implements Serializable{
 				System.out.print("Votre choix : ");
 				String reponse = sc.nextLine();
 				System.out.println();
-				
+
 				choix = Integer.parseInt(reponse) - 1;
-				
+
 				if (choix >= 0 && choix <= this.listeBoissons.size()) {
 					valide = true;
 					this.demanderPaiement(this.listeBoissons.get(choix));
@@ -226,7 +227,7 @@ public class MachineCafe implements Serializable{
 		}
 	}
 
-	
+
 	/**
 	 * Méthode qui permet de modifier une boisson de la machine à café
 	 */
@@ -257,7 +258,7 @@ public class MachineCafe implements Serializable{
 
 	}
 
-	
+
 	/**
 	 * Méthode qui permet de supprimer une boisson de la machine à café
 	 */
@@ -288,7 +289,7 @@ public class MachineCafe implements Serializable{
 
 	}
 
-	
+
 	/**
 	 * Méthode qui permet de remplir un ingrédient de la machine à café
 	 */
@@ -374,7 +375,7 @@ public class MachineCafe implements Serializable{
 
 	}
 
-	
+
 	/**
 	 * Méthode qui permet de vérifier les stocks des ingrédients de la machine
 	 */
@@ -392,7 +393,7 @@ public class MachineCafe implements Serializable{
 		System.out.println(message);
 	}
 
-	
+
 	/**
 	 * Méthode qui demander à l'utilisateur de payer lors de lachat d'une boisson
 	 * 
@@ -405,13 +406,15 @@ public class MachineCafe implements Serializable{
 		System.out.println();
 		System.out.print("Votre choix : ");
 
-		String monnaie = this.sc.nextLine();		
+		String monnaie = sc.nextLine();		
 		int montant = -1;
 		try {
 			montant = Integer.parseInt(monnaie);
 			if (montant >= b.getPrix()) {
+				Boisson boissonBis=this.demanderNiveauSucre(b);
+
 				System.out.println("Voici votre boisson !");
-				this.consommerBoisson(b);
+				this.consommerBoisson(boissonBis);
 			} else {
 				System.err.println("Vous n'avez pas entré assez d'argent.");
 			}
@@ -421,22 +424,61 @@ public class MachineCafe implements Serializable{
 		}
 	}
 
+	public Boisson demanderNiveauSucre(Boisson b){
+
+		Boisson boisson=null;
+		boisson=(Boisson) SerializationUtils.clone(b);
+		
+		for(Entry<Ingredient, Integer> entry : boisson.getNbUnitesIngredient().entrySet()) {
+			Ingredient ingredient = entry.getKey();
+			if(ingredient.getNom().equals("Sucre")){
+				boolean valide = false;
+				while (!valide) {
+					System.out.println("Votre boisson " + b.getNom() + " contient : " + entry.getValue() + " sucre");
+					System.out.println("Combien en voulez vous ? (entrez un nombre entre 0 et 5 inclus)");
+					System.out.println();
+					String sucre = this.sc.nextLine();	
+					try {
+						int niveau = Integer.parseInt(sucre);
+						if(niveau<=5 && niveau >=0){
+							entry.setValue(niveau);
+							valide=true;
+						}else{
+							System.out.println("Veuillez entrer un niveau de sucre entre 0 et 5");
+						}
+
+					}
+					catch(Exception e) {
+						System.err.println("Veuillez entrer un nombre correct.");
+					}
+				}
+			}
+		}
+
+		return boisson;
+	}
+
 	/**
 	 * Méthode qui permet de consommer une boisson lorsqu'on l'achète
 	 * 
 	 * @param b
 	 */
-	public void consommerBoisson(Boisson b) {
-		int index = this.listeBoissons.indexOf(b);
-
-		for(Entry<Ingredient, Integer> entry : this.listeBoissons.get(index).getNbUnitesIngredient().entrySet()) {
-			Ingredient ingredient = entry.getKey();
-			Integer quantite = entry.getValue();
-			this.diminuerStock(ingredient, quantite);
+	public void consommerBoisson(Boisson b) {	
+		
+		for(Entry<Ingredient, Integer> entry : b.getNbUnitesIngredient().entrySet()) {
+			try{
+				Ingredient ingredient = entry.getKey();
+				Integer quantite = entry.getValue();
+				System.out.println(ingredient+""+quantite);
+				this.diminuerStock(ingredient, quantite);
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+			
 		}
 	}
-	
-	
+
+
 	/**
 	 * Méthode qui permet de diminuer le stock d'un ingrédient dans la machine
 	 * 
@@ -446,6 +488,27 @@ public class MachineCafe implements Serializable{
 	 * 			quantité du stock à diminuer
 	 */
 	public void diminuerStock(Ingredient i, int quantite) {
+		for(Entry<Ingredient, Integer> entry : this.listeIngredients.entrySet()) {
+			if(entry.getKey().getNom().equals(i.getNom())){
+				int quantiteInitiale=entry.getValue();
+				int nouvelleQuantite = quantiteInitiale - quantite;
+				if (nouvelleQuantite < 0) {
+					nouvelleQuantite = 0;
+				}
+				entry.setValue(nouvelleQuantite);
+			}
+		}
+		/*
+		// On récupère la quantité dans la machine
+		int quantiteInitiale = this.listeIngredients.get(i);
+		System.out.println(quantiteInitiale);
+		// On diminue le stock dans la machine
+		
+		// On met à jour à jour la valeur
+		//this.listeIngredients.put(i, nouvelleQuantite);*/
+	}
+
+	public void AugmenterStock(Ingredient i, int quantite) {
 		// On récupère la quantité dans la machine
 		int quantiteInitiale = this.listeIngredients.get(i);
 		// On diminue le stock dans la machine
